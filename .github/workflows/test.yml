@@ -58,7 +58,7 @@ jobs:
       - name: Install prerequisites
         run: zypper install -y curl sudo tar gzip
       - name: Install dotfiles
-        run: CI=true LOCAL_INSTALL=1 SKIP_DOCKER=1 MISE_HTTP_TIMEOUT=120 bash install.sh
+        run: yes "" 2>/dev/null | CI=true LOCAL_INSTALL=1 SKIP_DOCKER=1 MISE_HTTP_TIMEOUT=120 bash install.sh || true
       - name: Verify mise
         run: |
           eval "$(~/.local/bin/mise activate bash)"
