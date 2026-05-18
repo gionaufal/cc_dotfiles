@@ -17,8 +17,13 @@ if [ -z "${LOCAL_INSTALL:-}" ]; then
   if ! command -v git > /dev/null 2>&1; then
     case "$(uname -s)" in
       Linux)
-        sudo apt-get update
-        sudo apt-get install -y git
+        if grep -q "^ID=ubuntu" /etc/os-release 2>/dev/null; then
+          sudo apt-get update
+          sudo apt-get install -y git
+        elif grep -qE "^ID.*opensuse" /etc/os-release 2>/dev/null; then
+          sudo zypper refresh
+          sudo zypper install -y git
+        fi
         ;;
     esac
   fi
@@ -32,7 +37,14 @@ fi
 
 case "$(uname -s)" in
   Linux)
-    bash "$HOME/.cc_dotfiles/ubuntu.sh"
+    if grep -q "^ID=ubuntu" /etc/os-release 2>/dev/null; then
+      bash "$HOME/.cc_dotfiles/ubuntu.sh"
+    elif grep -qE "^ID.*opensuse" /etc/os-release 2>/dev/null; then
+      bash "$HOME/.cc_dotfiles/opensuse.sh"
+    else
+      echo "Linux distribution not supported. Supported: Ubuntu, OpenSUSE"
+      exit 1
+    fi
     ;;
   Darwin)
     bash "$HOME/.cc_dotfiles/mac.sh"
