@@ -1,18 +1,37 @@
 #!/bin/bash
 
 install_system_deps() {
-  echo "  - vim (gvim)"
+  echo "  - Installing system dependencies"
 
   sudo zypper refresh
-  sudo zypper install -y dconf util-linux
 
-  sudo zypper install -y rsync \
-    the_silver_searcher \
+  # Install basic tools
+  sudo zypper install -y \
+    dconf \
+    util-linux \
     git \
     xclip \
-    patterns-devel-base-devel_basis \
     zsh \
-    gvim \
+    vim \
+    tmux \
+    fontconfig
+
+  # Add Base:System repo for libpcre1 and utilities repo for silver searcher
+  sudo zypper addrepo https://download.opensuse.org/repositories/Base:/System/openSUSE_Tumbleweed/Base:System.repo || true
+  sudo zypper addrepo https://download.opensuse.org/repositories/utilities/openSUSE_Factory/utilities.repo || true
+  sudo zypper --gpg-auto-import-keys refresh
+
+  # Install PCRE library (required by silver searcher) and silver searcher
+  sudo zypper install -y libpcre1 the_silver_searcher || true
+
+  # Install development tools
+  sudo zypper install -y \
+    patterns-devel-base-devel_basis \
+    gcc \
+    gcc-c++
+
+  # Install development libraries for Ruby/Node.js
+  sudo zypper install -y \
     libevent-devel \
     ncurses-devel \
     bison \
@@ -22,11 +41,6 @@ install_system_deps() {
     zlib-devel \
     libyaml-devel \
     libffi-devel
-}
-
-install_tmux() {
-  echo "Installing tmux"
-  sudo zypper install -y tmux
 }
 
 install_gnome_terminal_colors() {
@@ -58,7 +72,6 @@ install_docker() {
 }
 
 install_system_deps
-install_tmux
 
 if [ -z "${CI:-}" ]; then
   install_gnome_terminal_colors

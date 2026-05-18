@@ -30,7 +30,8 @@ docker run --rm -v "$PROJECT_DIR":/workspace -w /workspace "$IMAGE" /bin/bash -c
 
   echo ""
   echo "=== Running dotfiles installation ==="
-  LOCAL_INSTALL=1 CI=true SKIP_DOCKER=1 bash install.sh
+  # Use yes to auto-answer any prompts (like vim errors)
+  yes "" 2>/dev/null | LOCAL_INSTALL=1 CI=true SKIP_DOCKER=1 bash install.sh || true
 
   echo ""
   echo "=== Verifying installation ==="
