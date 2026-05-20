@@ -52,16 +52,8 @@ install_gnome_terminal_colors() {
 }
 
 install_docker() {
-  # Remove old Docker versions
-  sudo zypper remove -y docker docker-engine
-
-  # Add Docker repository
-  # OpenSUSE uses the SLES Docker repository
-  sudo zypper addrepo https://download.docker.com/linux/sles/docker-ce.repo
-  sudo zypper refresh
-
-  # Install Docker packages
-  sudo zypper install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+  # Install docker and docker-compose
+  sudo zypper install docker docker-compose
 
   # Enable and start Docker service
   sudo systemctl enable docker
